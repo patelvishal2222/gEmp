@@ -1,0 +1,196 @@
+﻿
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<script src="/script/angular.min.js"></script>
+
+<script>
+    
+    var emp = angular.module('emp', []);
+    
+    emp.controller('index', function ($scope, $http) {
+        $scope.table = [];
+        $scope.Emps = [];
+        $scope.Emp = {
+            EmpId: 0,
+            EmpName: '',
+            Address: ''
+
+        };
+
+        var response = $http({ url: "/api/EmpApi", method: 'get', params: null, data: null });
+        
+        response.then(function (d) {
+            $scope.data = d;
+            
+            $scope.Emps = d.data;
+            $scope.table.push({ rows: d.data, cols: Object.keys(d.data[0]) });
+           
+
+
+        },
+        function (d) { alert('error:' + Url.toString()); });
+        $scope.create = function ()
+        {
+          
+            
+            $scope.ModelButton = "Create";
+            $scope.Emp.EmpId = 0;
+
+        }
+        $scope.EditRecord = function (tempEmp, index) {
+
+            
+            $scope.Emp = angular.copy(tempEmp);
+            $scope.ModelButton = "save";
+            $scope.index = index;
+            
+       //     var Data = angular.toJson($scope.Emp);
+       //     var response = $http({
+       //         url: "/api/EmpApi/" + $scope.Emp.EmpId.toString(),
+       //         dataType: 'json',
+       //         method: 'GET',
+       //         params: null,
+       //         headers: {
+       //             "Content-Type": "application/json"
+       //         },
+       //         data: Data
+       //     });
+       //     response.then(function (d) {
+                    
+       //         $scope.ItemMaster = d.data;
+                   
+       //     },
+       //function (d) {
+       //    alert(d);
+       //    alert('Error:' + Url.toString());
+       //});
+
+        }
+        $scope.DeleteRecord = function (tempItemMaster, index) {
+            
+            var yesno = confirm('Are you sure remove Record?');
+            if (yesno ==true) {
+                $scope.table[0].rows.splice(index, 1)
+            }
+        }
+
+        $scope.SaveRecord = function () {
+            var Data = angular.toJson($scope.Emp);
+            var response = $http({
+                url: "/api/EmpApi",
+                dataType: 'json',
+                method: 'post',
+                params: null,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                data: Data
+            });
+            response.then(function (d) {
+
+                alert('save');
+                location.href = "/Emp2/Index"
+                //if ($scope.ModelButton == "Create") {
+
+                //    if ($scope.table.length == 0) {
+
+                //        $scope.DisplayData();
+                //    }
+                //    else {
+                //        $scope.table[0].rows.push(d.data);
+                //    }
+
+                //}
+                //else {
+                //    $scope.table[0].rows[$scope.index] = d.data;
+
+                //}
+            },
+       function (d) {
+           alert(d);
+           alert('Error:' + Url.toString());
+       });
+        }
+    });
+</script>
+
+
+
+
+    <h2>Index</h2>
+<div ng-app="emp" ng-controller="index">
+
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Emp</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="modal-body">
+
+                                <div class="form-group" style="display:none">
+                                    <label>EmpId</label>
+                                    <input class="form-control" required ng-model="Emp.EmpId" />
+
+
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Emp Name</label>
+
+                                    <input class="form-control" required ng-model="Emp.EmpName" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Address</label>
+
+                                    <input class="form-control" required ng-model="Emp.Address" />
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="SaveRecord()">{{ModelButton}}</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div>
+                <form name="JvForm">
+                    <div>
+                        <input type="button" value="create" ng-click="create()" data-toggle="modal" data-target="#myModal" />
+
+
+                        <table>
+                            <tr>
+                                <th>EmpdId</th>
+                                <th>EmpName</th>
+                                <th>Address</th>
+
+                            </tr>
+                            <tr ng-repeat="e in Emps">
+                                <td>{{e.EmpId}}</td>
+                                <td>{{e.EmpName}}</td>
+                                <td>{{e.Address}}</td>
+                                <td> <input type="button" value="Edit" ng-click="EditRecord(e,$index)" data-toggle="modal" data-target="#myModal" /></td>
+                                <td> <input type="button" value="Delete" ng-click="DeleteRecord(e,$index)" /></td>
+
+                            </tr>
+                        </table>
+                    </div>
+                </form>
+            </div>
+</div>
+    

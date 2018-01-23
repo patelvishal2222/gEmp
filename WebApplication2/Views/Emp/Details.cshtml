@@ -1,0 +1,36 @@
+﻿@model WebApplication2.Models.Emp
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Emp</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.EmpName)
+        </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.city.CityName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EmpName)
+        </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dd>
+            @Html.DisplayFor(model => model.city.CityName)
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.EmpId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
